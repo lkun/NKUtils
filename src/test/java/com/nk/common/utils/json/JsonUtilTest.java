@@ -1,7 +1,7 @@
 package com.nk.common.utils.json;
 
-import com.nk.common.utils.json.domain.Order;
-import com.nk.common.utils.json.domain.User;
+import com.nk.common.utils.model.domain.Order;
+import com.nk.common.utils.model.domain.User;
 import org.junit.Assert;
 import org.junit.Test;
 

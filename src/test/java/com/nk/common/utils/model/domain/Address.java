@@ -1,4 +1,4 @@
-package com.nk.common.utils.json.domain;
+package com.nk.common.utils.model.domain;
 
 public class Address {
     private long id;

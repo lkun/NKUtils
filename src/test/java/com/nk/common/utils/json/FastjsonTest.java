@@ -2,8 +2,10 @@ package com.nk.common.utils.json;
 
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.nk.common.utils.json.domain.Order;
-import com.nk.common.utils.json.domain.User;
+import com.github.jsonzou.jmockdata.JMockData;
+import com.github.jsonzou.jmockdata.MockConfig;
+import com.nk.common.utils.model.domain.Order;
+import com.nk.common.utils.model.domain.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,8 +14,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -57,7 +57,7 @@ public class FastjsonTest {
         System.out.println("FastjsonTest.testJsonToArray: result2 ==> " + result2);
     }
 
-    @org.junit.Test
+    @Test
     public void testJsonToGenerifyList() throws IOException {
         TypeReference<List<User>> typeReference = new TypeReference<List<User>>() {
         };
@@ -72,24 +72,22 @@ public class FastjsonTest {
 
     }
 
-    @org.junit.Test
+    @Test
     public void testJsonToPojo() throws IOException {
         User user = JSON.parseObject(userUrl, User.class);
         Assert.assertNotNull(user);
         Assert.assertEquals(1, user.getId());
     }
 
-    @org.junit.Test
+    @Test
     public void testPojoToJson() throws IOException {
-        User user = new User();
-        user.setId(1);
-        user.setUsername("yidasanqian");
-        String userJson = JSON.toJSONString(user);
+        User mockUser = JMockData.mock(User.class);
+        String userJson = JSON.toJSONString(mockUser);
         System.out.println("FastjsonTest.testPojoToJson: userJson ==> " + userJson);
         Assert.assertNotNull(userJson);
     }
 
-    @org.junit.Test
+    @Test
     public void testJsonToPojoWithReference() throws IOException {
         User user = JSON.parseObject(userAddressUrl, User.class);
         System.out.println("FastjsonTest.testJsonToPojoWithReference: user ==> " + user);
@@ -97,7 +95,7 @@ public class FastjsonTest {
         Assert.assertEquals(1, user.getId());
     }
 
-    @org.junit.Test
+    @Test
     public void testJsonToPojoWithList() throws IOException {
         User user = JSON.parseObject(userOrdersUrl, User.class);
         System.out.println("JacksonTest.testJsonToPojoWithReference: orders ==> " + user.getOrders());
@@ -107,15 +105,21 @@ public class FastjsonTest {
 
     @Test
     public void testOrderToJson() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:dd");
-        LocalDateTime now = LocalDateTime.now();
-        String createAt = formatter.format(now);
-        System.out.println("JacksonTest.testOrderToJson: createAt ==> " + createAt);
-        Order order = new Order();
-        order.setId(1);
-        order.setTraceNo(110);
-        order.setCreateAt(createAt);
-        String orderJson = JSON.toJSONString(order);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:dd");
+//        LocalDateTime now = LocalDateTime.now();
+//        String createAt = formatter.format(now);
+//        System.out.println("JacksonTest.testOrderToJson: createAt ==> " + createAt);
+//        Order order = new Order();
+//        order.setId(1);
+//        order.setTraceNo(110);
+//        order.setCreateAt(Date.from(LocalDateTime.parse(createAt,formatter).atZone(ZoneId.systemDefault()).toInstant()));
+        MockConfig mockConfig = MockConfig.newInstance().globalConfig()
+                .dateRange("2019-03-10 00:00:00" ,"2019-03-30 23:59:59")
+                .decimalScale(2)
+                .intRange(0 ,100)
+                .longRange(0L ,1000L);
+        Order mockOrder = JMockData.mock(Order.class , mockConfig);
+        String orderJson = JSON.toJSONStringWithDateFormat(mockOrder,"yyyy-MM-dd HH:mm:dd");
         System.out.println("JacksonTest.testOrderToJson: orderJson ==> " + orderJson);
         Assert.assertNotNull(orderJson);
     }
@@ -124,10 +128,11 @@ public class FastjsonTest {
     public void testOrderToJson2() {
         Date updateAt = new Date();
         System.out.println("JacksonTest.testOrderToJson2: updateAt ==> " + updateAt);
-        Order order = new Order();
-        order.setId(1);
-        order.setTraceNo(110);
-        order.setUpdateAt(updateAt);
+//        Order order = new Order();
+//        order.setId(1);
+//        order.setTraceNo(110);
+//        order.setUpdateAt(updateAt);
+        Order order = JMockData.mock(Order.class);
         String orderJson = JSON.toJSONString(order, true);
         //String orderJson = JSON.toJSONStringWithDateFormat(order, "yyyy年MM月dd日 HH时mm分ss秒");
         System.out.println("JacksonTest.testOrderToJson2: orderJson ==> " + orderJson);

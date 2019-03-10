@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.nk.common.utils.json.domain.Order;
-import com.nk.common.utils.json.domain.User;
+import com.github.jsonzou.jmockdata.JMockData;
+import com.github.jsonzou.jmockdata.MockConfig;
+import com.nk.common.utils.model.domain.Order;
+import com.nk.common.utils.model.domain.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,8 +17,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +38,7 @@ public class JacksonTest {
         userOrdersUrl = getClass().getClassLoader().getResource("json/user-with-orders.json");
     }
 
-    @org.junit.Test
+    @Test
     public void testJsonToMap() throws URISyntaxException, IOException {
         Map<String, Object> result = objectMapper.readValue(userUrl, Map.class);
         System.out.println("JacksonTest.testParseJson: result ==> " + result);
@@ -48,7 +48,7 @@ public class JacksonTest {
     }
 
 
-    @org.junit.Test
+    @Test
     public void testJsonToList() throws URISyntaxException, IOException {
         List result = objectMapper.readValue(arrayUrl, List.class);
         System.out.println("JacksonTest.testJsonToList: result ==> " + result);
@@ -56,7 +56,7 @@ public class JacksonTest {
     }
 
 
-    @org.junit.Test
+    @Test
     public void testJsonToGenerifyList() throws URISyntaxException, IOException {
         TypeReference<List<User>> typeReference = new TypeReference<List<User>>() {
         };
@@ -71,14 +71,14 @@ public class JacksonTest {
 
     }
 
-    @org.junit.Test
+    @Test
     public void testJsonToPojo() throws IOException {
         User user = objectMapper.readValue(new FileReader(userUrl.getPath()), User.class);
         Assert.assertNotNull(user);
         Assert.assertEquals(1, user.getId());
     }
 
-    @org.junit.Test
+    @Test
     public void testPojoToJson() throws IOException {
         User user = new User();
         user.setId(1);
@@ -88,7 +88,7 @@ public class JacksonTest {
         Assert.assertNotNull(userJson);
     }
 
-    @org.junit.Test
+    @Test
     public void testJsonToPojoWithReference() throws IOException {
         User user = objectMapper.readValue(new FileReader(userAddressUrl.getPath()), User.class);
         System.out.println("JacksonTest.testJsonToPojoWithReference: user ==> " + user);
@@ -96,14 +96,14 @@ public class JacksonTest {
         Assert.assertEquals(1, user.getId());
     }
 
-    @org.junit.Test
+    @Test
     public void testJsonToPojoWithList() throws IOException {
         User user = objectMapper.readValue(new FileReader(userOrdersUrl.getPath()), User.class);
         System.out.println("JacksonTest.testJsonToPojoWithReference: orders ==> " + user.getOrders());
         Assert.assertNotNull(user.getOrders());
     }
 
-    @org.junit.Test
+    @Test
     public void testConvertFromList() throws IOException {
         List sourceList = objectMapper.readValue(arrayUrl, List.class);
         // Convert from List<Integer> to int[]
@@ -113,7 +113,7 @@ public class JacksonTest {
 
     }
 
-    @org.junit.Test
+    @Test
     public void testConvertFromPojo() throws IOException {
         User pojoValue = objectMapper.readValue(new FileReader(userUrl.getPath()), User.class);
         // Convert a POJO into Map!
@@ -122,7 +122,7 @@ public class JacksonTest {
         Assert.assertNotNull(propertyMap);
     }
 
-    @org.junit.Test
+    @Test
     public void testConvertFromMap() throws IOException {
         Map<String, Object> propertyMap = objectMapper.readValue(userUrl, Map.class);
         // Convert a Map into POJO!
@@ -133,15 +133,16 @@ public class JacksonTest {
 
     @Test
     public void testOrderToJson() throws JsonProcessingException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:dd");
-        LocalDateTime now = LocalDateTime.now();
-        String createAt = formatter.format(now);
-        System.out.println("JacksonTest.testOrderToJson: createAt ==> " + createAt);
-        Order order = new Order();
-        order.setId(1);
-        order.setTraceNo(110);
-        order.setCreateAt(createAt);
-        String orderJson = objectMapper.writeValueAsString(order);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:dd");
+//        LocalDateTime now = LocalDateTime.now();
+//        String createAt = formatter.format(now);
+//        System.out.println("JacksonTest.testOrderToJson: createAt ==> " + createAt);
+//        Order order = new Order();
+//        order.setId(1);
+//        order.setTraceNo(110);
+//        order.setCreateAt(Date.from(LocalDateTime.parse(createAt,formatter).atZone(ZoneId.systemDefault()).toInstant()));
+        Order mockOrder = JMockData.mock(Order.class , new MockConfig().dateRange("2019-03-10" , "2019-03-30"));
+        String orderJson = objectMapper.writeValueAsString(mockOrder);
         System.out.println("JacksonTest.testOrderToJson: orderJson ==> " + orderJson);
         Assert.assertNotNull(orderJson);
     }
@@ -151,10 +152,11 @@ public class JacksonTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:dd");
         Date updateAt = new Date();
         System.out.println("JacksonTest.testOrderToJson2: updateAt ==> " + updateAt);
-        Order order = new Order();
-        order.setId(1);
-        order.setTraceNo(110);
-        order.setUpdateAt(updateAt);
+//        Order order = new Order();
+//        order.setId(1);
+//        order.setTraceNo(110);
+//        order.setUpdateAt(updateAt);
+        Order order = JMockData.mock(Order.class);
         ObjectWriter writer = objectMapper.writer(sdf);
         String orderJson = writer.writeValueAsString(order);
         System.out.println("JacksonTest.testOrderToJson2: orderJson ==> " + orderJson);

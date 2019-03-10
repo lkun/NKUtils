@@ -81,4 +81,8 @@ public class DateUtilsTest {
         LocalDate localDate = DateUtils.firstInMonthAnyYear("2013-01-01");
         System.out.println(localDate);
     }
+
+    public static void main(String[] args) {
+
+    }
 }

@@ -1,4 +1,4 @@
-package com.nk.common.utils.json.domain;
+package com.nk.common.utils.model.domain;
 
 
 import java.util.List;

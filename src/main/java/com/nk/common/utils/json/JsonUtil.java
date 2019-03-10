@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 /**
  *
+ * @author LK
  */
 public class JsonUtil {
 
@@ -48,8 +49,8 @@ public class JsonUtil {
                 in = JsonUtil.class.getClassLoader().getResourceAsStream("application.yml");
                 if (in != null) {
                     Yaml yaml = new Yaml();
-                    Map<String, Object> propsMap = yaml.loadAs(in, LinkedHashMap.class);
-                    propsMap = (Map<String, Object>) propsMap.get("json");
+                    LinkedHashMap propsMap = yaml.loadAs(in, LinkedHashMap.class);
+                    propsMap = (LinkedHashMap) propsMap.get("json");
                     if (propsMap != null) {
                         jsonClassType = String.valueOf(propsMap.get("class-type"));
                     } else {

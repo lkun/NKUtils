@@ -5,6 +5,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 
+/**
+ * @author LK
+ */
 public final class DateUtils {
     public static LocalDateTime timestampToLocalDateTime(long timestamp) {
         Instant instant = Instant.ofEpochMilli(timestamp);
@@ -78,5 +81,67 @@ public final class DateUtils {
 
     public static LocalDate firstInMonthAnyYear(String date) {
         return LocalDate.parse(date).with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY));
+    }
+
+    /**
+     * 获取 yyyy-MM-dd 00:00:00
+     * @param addTime
+     * @return
+     */
+    public static Date getDayStartTimeBy(long addTime) {
+        Instant instant = Instant.ofEpochSecond(addTime);
+        ZoneId zone = ZoneId.systemDefault();
+        instant = localDateToDateTime(instant, zone);
+        return Date.from(instant);
+    }
+
+    private static Instant localDateToDateTime(Instant instant, ZoneId zone) {
+        LocalDate localDate = LocalDateTime.ofInstant(instant, zone).toLocalDate();
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, LocalTime.MIN);
+        instant = localDateTime.atZone(zone).toInstant();
+        return instant;
+    }
+
+    /**
+     * 获取nextDay yyyy-MM-dd 00:00:00
+     * @param addTime
+     * @return
+     */
+    public static Date getNextDayStartTimeBy(long addTime) {
+        Instant instant = Instant.ofEpochSecond(addTime);
+        ZoneId zone = ZoneId.systemDefault();
+        instant = nextLocalDateToDateTime(instant, zone);
+        return Date.from(instant);
+    }
+
+    private static Instant nextLocalDateToDateTime(Instant instant, ZoneId zone) {
+        LocalDate localDate = LocalDateTime.ofInstant(instant, zone).toLocalDate().plusDays(1);
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, LocalTime.MIN);
+        instant = localDateTime.atZone(zone).toInstant();
+        return instant;
+    }
+
+    /**
+     * 获取 yyyy-MM-dd 00:00:00
+     * @param addTime
+     * @return
+     */
+    public static Date getDayStartTimeBy(Date addTime) {
+        Instant instant = addTime.toInstant();
+        ZoneId zone = ZoneId.systemDefault();
+        instant = localDateToDateTime(instant, zone);
+        return Date.from(instant);
+    }
+
+    /**
+     * 获取nextDay yyyy-MM-dd 00:00:00
+     * @param addTime
+     * @return
+     */
+    public static Date getNextDayStartTimeBy(Date addTime) {
+        Instant instant = addTime.toInstant();
+        ZoneId zone = ZoneId.systemDefault();
+        instant = nextLocalDateToDateTime(instant, zone);
+        return Date.from(instant);
     }
 }

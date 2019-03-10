@@ -1,10 +1,12 @@
 package com.nk.common.utils.json;
 
+import com.github.jsonzou.jmockdata.JMockData;
+import com.github.jsonzou.jmockdata.MockConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.nk.common.utils.json.domain.Order;
-import com.nk.common.utils.json.domain.User;
+import com.nk.common.utils.model.domain.Order;
+import com.nk.common.utils.model.domain.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,8 +14,6 @@ import org.junit.Test;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -118,15 +118,16 @@ public class GsonTest {
 
     @Test
     public void testOrderToJson() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:dd");
-        LocalDateTime now = LocalDateTime.now();
-        String createAt = formatter.format(now);
-        System.out.println("GsonTest.testOrderToJson: createAt ==> " + createAt);
-        Order order = new Order();
-        order.setId(1);
-        order.setTraceNo(110);
-        order.setCreateAt(createAt);
-        String orderJson = gson.toJson(order);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:dd");
+//        LocalDateTime now = LocalDateTime.now();
+//        String createAt = formatter.format(now);
+//        System.out.println("GsonTest.testOrderToJson: createAt ==> " + createAt);
+//        Order order = new Order();
+//        order.setId(1);
+//        order.setTraceNo(110);
+//        order.setCreateAt(Date.from(LocalDateTime.parse(createAt,formatter).atZone(ZoneId.systemDefault()).toInstant()));
+        Order mockOrder = JMockData.mock(Order.class , new MockConfig().dateRange("2019-03-10" , "2019-03-30"));
+        String orderJson = gson.toJson(mockOrder);
         System.out.println("GsonTest.testOrderToJson: orderJson ==> " + orderJson);
         Assert.assertNotNull(orderJson);
     }
